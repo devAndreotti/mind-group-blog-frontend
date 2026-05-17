@@ -1,6 +1,15 @@
+import { Navigate, Route, Routes } from "react-router-dom";
+import { Layout } from "./components/Layout";
+import { Login } from "./pages/Login";
+import { Register } from "./pages/Register";
+
 export const App = () => (
-  <main className="page">
-    <h1>Mind Group Blog</h1>
-    <p>Aplicacao React para o desafio de blog.</p>
-  </main>
+  <Routes>
+    <Route element={<Layout />}>
+      <Route index element={<Navigate to="/login" replace />} />
+      <Route path="login" element={<Login />} />
+      <Route path="register" element={<Register />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
+    </Route>
+  </Routes>
 );
