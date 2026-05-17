@@ -37,6 +37,13 @@ export const authApi = {
   }
 };
 
+export const userApi = {
+  updateMe: async (data: { name: string; email: string; bio: string }) => {
+    const response = await api.put<User>("/users/me", data);
+    return response.data;
+  }
+};
+
 export const articleApi = {
   list: async (params?: { search?: string; categoryId?: string }) => {
     const response = await api.get<Article[]>("/articles", { params });

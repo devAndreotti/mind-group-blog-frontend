@@ -30,9 +30,9 @@ export const Login = () => {
   return (
     <section className="page auth-page">
       <form className="auth-card" onSubmit={handleSubmit}>
-        <p className="eyebrow">Acesso</p>
-        <h1>Entrar</h1>
-        <p>Use uma conta autorizada para gerenciar artigos.</p>
+        <div className="auth-logo">&lt;M/&gt;</div>
+        <h1>Entrar na Plataforma</h1>
+        <p>Acesse sua conta para gerenciar seus artigos.</p>
 
         {error && <div className="alert">{error}</div>}
 

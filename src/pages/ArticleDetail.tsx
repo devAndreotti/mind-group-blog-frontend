@@ -1,6 +1,19 @@
-import { ArrowLeft, Clock, Edit3, Trash2, UserRound } from "lucide-react";
+import {
+  ArrowLeft,
+  Bookmark,
+  Clock,
+  Edit3,
+  Eye,
+  Heart,
+  MessageCircle,
+  Send,
+  Share2,
+  Trash2,
+  UserRound
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { ArticleCoverPlaceholder } from "../components/ArticleCard";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
 import { articleApi } from "../services/api";
@@ -15,6 +28,7 @@ export const ArticleDetail = () => {
   const [error, setError] = useState("");
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
     if (!id) {
@@ -59,22 +73,54 @@ export const ArticleDetail = () => {
     <article className="page article-detail">
       <Link to="/articles" className="text-link">
         <ArrowLeft size={16} />
-        Voltar
+        Voltar aos Artigos
       </Link>
 
-      {article.coverImage && <img className="detail-cover" src={article.coverImage} alt="" />}
-
       <div className="detail-header">
-        <div className="meta-row">
-          <span>{article.category?.name ?? "Sem categoria"}</span>
-          <span>{formatDate(article.publishedAt)}</span>
+        <span className="category-pill">{article.category?.name ?? "Sem categoria"}</span>
+        <h1>{article.title}</h1>
+        <p>{article.summary}</p>
+
+        <div className="detail-author-row">
+          <div className="avatar">
+            <UserRound size={20} />
+          </div>
+          <div>
+            <strong>{article.author.name}</strong>
+            <span>{formatDate(article.publishedAt)}</span>
+          </div>
           <span>
             <Clock size={14} />
             {estimateReadingTime(article.content)} min
           </span>
+          <div className="detail-actions">
+            <Heart size={16} />
+            <Bookmark size={16} />
+            <Share2 size={16} />
+          </div>
         </div>
-        <h1>{article.title}</h1>
-        <p>{article.summary}</p>
+
+        <div className="detail-stats">
+          <span>
+            <Heart size={14} />
+            {Math.max(1, article.tags.length)} curtidas
+          </span>
+          <span>
+            <Eye size={14} />
+            {article.id * 37} visualizacoes
+          </span>
+          <span>
+            <MessageCircle size={14} />2 comentarios
+          </span>
+        </div>
+      </div>
+
+      <div className="detail-cover-frame">
+        {article.coverImage ? (
+          <img className="detail-cover" src={article.coverImage} alt="" />
+        ) : (
+          <ArticleCoverPlaceholder />
+        )}
       </div>
 
       {canManage && (
@@ -123,6 +169,53 @@ export const ArticleDetail = () => {
           ))}
         </div>
       )}
+
+      <section className="comments-section">
+        <h2>Comentarios (2)</h2>
+        <div className="comment-card">
+          <div className="avatar">
+            <UserRound size={20} />
+          </div>
+          <div>
+            <div className="comment-header">
+              <strong>{article.author.name}</strong>
+              <span>{formatDate(article.publishedAt)}</span>
+              <span>
+                <Heart size={13} />1
+              </span>
+            </div>
+            <p>Excelente artigo. O conteudo explica bem os pontos principais.</p>
+          </div>
+        </div>
+        <div className="comment-card">
+          <div className="avatar">
+            <UserRound size={20} />
+          </div>
+          <div>
+            <div className="comment-header">
+              <strong>Marie Smith</strong>
+              <span>{formatDate(article.updatedAt)}</span>
+              <span>
+                <Heart size={13} />4
+              </span>
+            </div>
+            <p>Artigo muito interessante. Ficou claro como aplicar a ideia na pratica.</p>
+          </div>
+        </div>
+
+        <form className="comment-form" onSubmit={(event) => event.preventDefault()}>
+          <textarea
+            value={commentText}
+            onChange={(event) => setCommentText(event.target.value)}
+            rows={4}
+            placeholder="Otimo artigo. Esperando pelo proximo!"
+          />
+          <button className="button button-primary" type="submit">
+            <Send size={15} />
+            Publicar Comentario
+          </button>
+        </form>
+      </section>
     </article>
   );
 };

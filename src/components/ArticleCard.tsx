@@ -1,18 +1,33 @@
-import { ArrowRight, Clock, Tags, UserRound } from "lucide-react";
+import { ArrowRight, Clock, Eye, Heart, ImageOff, Tags, UserRound } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Article } from "../types";
 import { estimateReadingTime, formatDate } from "../utils";
 
-export const ArticleCard = ({ article }: { article: Article }) => {
+export const ArticleCoverPlaceholder = ({ compact = false }: { compact?: boolean }) => (
+  <div className="cover-placeholder">
+    <div className="cover-empty-state">
+      <ImageOff size={compact ? 18 : 24} />
+      <span>Sem imagem</span>
+    </div>
+  </div>
+);
+
+export const ArticleCard = ({
+  article,
+  variant = "grid"
+}: {
+  article: Article;
+  variant?: "grid" | "list" | "compact";
+}) => {
+  const readingTime = estimateReadingTime(article.content);
+
   return (
-    <article className="article-card">
+    <article className={`article-card article-card-${variant}`}>
       <Link to={`/articles/${article.id}`} className="cover">
         {article.coverImage ? (
           <img src={article.coverImage} alt="" />
         ) : (
-          <div className="cover-fallback">
-            <span>{article.category?.name ?? "Blog"}</span>
-          </div>
+          <ArticleCoverPlaceholder compact={variant !== "grid"} />
         )}
       </Link>
 
@@ -35,7 +50,15 @@ export const ArticleCard = ({ article }: { article: Article }) => {
           </span>
           <span>
             <Clock size={14} />
-            {estimateReadingTime(article.content)} min
+            {readingTime} min
+          </span>
+          <span>
+            <Eye size={14} />
+            {article.id * 37}
+          </span>
+          <span>
+            <Heart size={14} />
+            {article.tags.length}
           </span>
         </div>
 

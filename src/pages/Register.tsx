@@ -33,9 +33,9 @@ export const Register = () => {
   return (
     <section className="page auth-page">
       <form className="auth-card" onSubmit={handleSubmit}>
-        <p className="eyebrow">Nova conta</p>
-        <h1>Cadastrar</h1>
-        <p>Crie uma conta para publicar e gerenciar artigos.</p>
+        <div className="auth-logo">&lt;M/&gt;</div>
+        <h1>Criar Conta</h1>
+        <p>Crie seu acesso para publicar e gerenciar artigos.</p>
 
         {error && <div className="alert">{error}</div>}
 
