@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+import { Grid3X3, List, Search } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
 import { ArticleCard } from "../components/ArticleCard";
 import { articleApi, taxonomyApi } from "../services/api";
@@ -9,6 +9,7 @@ export const Articles = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState("");
   const [categoryId, setCategoryId] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [loading, setLoading] = useState(true);
 
   const loadArticles = async () => {
@@ -35,8 +36,8 @@ export const Articles = () => {
     <section className="page">
       <div className="section-heading">
         <div>
-          <p className="eyebrow">Biblioteca</p>
           <h1>Todos os artigos</h1>
+          <p>Explore nossa colecao completa de artigos tecnicos</p>
         </div>
       </div>
 
@@ -65,6 +66,25 @@ export const Articles = () => {
           </select>
         </label>
 
+        <div className="view-toggle" aria-label="Modo de visualizacao">
+          <button
+            className={`icon-button ${viewMode === "grid" ? "active" : ""}`}
+            type="button"
+            onClick={() => setViewMode("grid")}
+            aria-label="Ver em cards"
+          >
+            <Grid3X3 size={17} />
+          </button>
+          <button
+            className={`icon-button ${viewMode === "list" ? "active" : ""}`}
+            type="button"
+            onClick={() => setViewMode("list")}
+            aria-label="Ver em lista"
+          >
+            <List size={17} />
+          </button>
+        </div>
+
         <button className="button button-primary" type="submit">
           Filtrar
         </button>
@@ -75,9 +95,9 @@ export const Articles = () => {
       ) : articles.length === 0 ? (
         <p className="empty-state">Nenhum artigo encontrado.</p>
       ) : (
-        <div className="article-grid">
+        <div className={viewMode === "list" ? "article-list" : "article-grid"}>
           {articles.map((article) => (
-            <ArticleCard key={article.id} article={article} />
+            <ArticleCard key={article.id} article={article} variant={viewMode} />
           ))}
         </div>
       )}
