@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import type { Article } from "../types";
 import { estimateReadingTime, formatDate } from "../utils";
 
-const CoverPlaceholder = ({ compact = false }: { compact?: boolean }) => (
+export const ArticleCoverPlaceholder = ({ compact = false }: { compact?: boolean }) => (
   <div className="cover-placeholder">
     <div className="cover-empty-state">
       <ImageOff size={compact ? 18 : 24} />
@@ -27,7 +27,7 @@ export const ArticleCard = ({
         {article.coverImage ? (
           <img src={article.coverImage} alt="" />
         ) : (
-          <CoverPlaceholder compact={variant !== "grid"} />
+          <ArticleCoverPlaceholder compact={variant !== "grid"} />
         )}
       </Link>
 

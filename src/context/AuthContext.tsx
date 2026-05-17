@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { authApi } from "../services/api";
+import { authApi, userApi } from "../services/api";
 import type { User } from "../types";
 
 type AuthContextValue = {
@@ -13,6 +13,7 @@ type AuthContextValue = {
     password: string;
     confirmPassword: string;
   }) => Promise<void>;
+  updateProfile: (data: { name: string; email: string; bio: string }) => Promise<void>;
   logout: () => void;
 };
 
@@ -65,6 +66,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.setItem("mind_blog_user", JSON.stringify(response.user));
         setToken(response.token);
         setUser(response.user);
+      },
+      updateProfile: async (data) => {
+        const profile = await userApi.updateMe(data);
+        localStorage.setItem("mind_blog_user", JSON.stringify(profile));
+        setUser(profile);
       },
       logout: () => {
         localStorage.removeItem("mind_blog_token");

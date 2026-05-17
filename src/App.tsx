@@ -24,6 +24,7 @@ export const App = () => (
         <Route path="articles/new" element={<ArticleEditorPage />} />
         <Route path="articles/:id/edit" element={<ArticleEditorPage />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="settings" element={<Profile />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />

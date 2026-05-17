@@ -49,8 +49,8 @@ export const ArticleEditorPage = () => {
 
       <div className="section-heading">
         <div>
-          <p className="eyebrow">{id ? "Edicao" : "Novo artigo"}</p>
-          <h1>{id ? "Editar artigo" : "Publicar artigo"}</h1>
+          <h1>{id ? "Editar Artigo" : "Criar Novo Artigo"}</h1>
+          <p>{id ? "Atualize o artigo publicado." : "Compartilhe seu conhecimento com a comunidade"}</p>
         </div>
       </div>
 
