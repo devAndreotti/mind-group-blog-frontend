@@ -7,6 +7,7 @@ import { Articles } from "./pages/Articles";
 import { Dashboard } from "./pages/Dashboard";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
+import { Profile } from "./pages/Profile";
 import { Register } from "./pages/Register";
 
 export const App = () => (
@@ -22,6 +23,7 @@ export const App = () => (
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="articles/new" element={<ArticleEditorPage />} />
         <Route path="articles/:id/edit" element={<ArticleEditorPage />} />
+        <Route path="profile" element={<Profile />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
