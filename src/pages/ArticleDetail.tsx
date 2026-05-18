@@ -16,15 +16,30 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArticleCoverPlaceholder } from "../components/ArticleCard";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
-import { articleApi } from "../services/api";
-import type { Article } from "../types";
+import { articleApi, userApi } from "../services/api";
+import type { Article, PublicUserProfile } from "../types";
 import { estimateReadingTime, formatDate, getErrorMessage } from "../utils";
+
+const getInitial = (name?: string) => name?.trim().charAt(0).toUpperCase() || "U";
+
+const AuthorAvatar = ({ name, avatar }: { name?: string; avatar?: string | null }) => (
+  <div className="avatar">
+    {avatar ? (
+      <img src={avatar} alt="" />
+    ) : (
+      <span className="avatar-fallback" aria-hidden="true">
+        {getInitial(name)}
+      </span>
+    )}
+  </div>
+);
 
 export const ArticleDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [article, setArticle] = useState<Article | null>(null);
+  const [authorProfile, setAuthorProfile] = useState<PublicUserProfile | null>(null);
   const [error, setError] = useState("");
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -35,11 +50,23 @@ export const ArticleDetail = () => {
       return;
     }
 
+    setAuthorProfile(null);
     articleApi
       .get(id)
       .then(setArticle)
       .catch((err) => setError(getErrorMessage(err)));
   }, [id]);
+
+  useEffect(() => {
+    if (!article) {
+      return;
+    }
+
+    userApi
+      .getPublicProfile(article.author.id)
+      .then(setAuthorProfile)
+      .catch(() => setAuthorProfile(null));
+  }, [article]);
 
   const canManage = article && user && (user.role === "admin" || user.id === article.author.id);
 
@@ -69,6 +96,10 @@ export const ArticleDetail = () => {
     return <section className="page narrow">Carregando artigo...</section>;
   }
 
+  const authorName = authorProfile?.name ?? article.author.name;
+  const authorBio = authorProfile?.bio ?? article.author.bio ?? "Autor do Mind Group Blog.";
+  const authorAvatar = authorProfile?.avatar ?? null;
+
   return (
     <article className="page article-detail">
       <Link to="/articles" className="text-link">
@@ -82,11 +113,9 @@ export const ArticleDetail = () => {
         <p>{article.summary}</p>
 
         <div className="detail-author-row">
-          <div className="avatar">
-            <UserRound size={20} />
-          </div>
+          <AuthorAvatar name={authorName} avatar={authorAvatar} />
           <div>
-            <strong>{article.author.name}</strong>
+            <strong>{authorName}</strong>
             <span>{formatDate(article.publishedAt)}</span>
           </div>
           <span>
@@ -153,12 +182,10 @@ export const ArticleDetail = () => {
       </div>
 
       <footer className="author-box">
-        <div className="avatar">
-          <UserRound size={22} />
-        </div>
+        <AuthorAvatar name={authorName} avatar={authorAvatar} />
         <div>
-          <strong>{article.author.name}</strong>
-          <p>{article.author.bio ?? "Autor do Mind Group Blog."}</p>
+          <strong>{authorName}</strong>
+          <p>{authorBio}</p>
         </div>
       </footer>
 

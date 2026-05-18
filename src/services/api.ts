@@ -5,6 +5,7 @@ import type {
   Category,
   Article,
   DashboardSummary,
+  PublicUserProfile,
   Tag,
   User
 } from "../types";
@@ -59,6 +60,10 @@ export const authApi = {
 export const userApi = {
   updateMe: async (data: { name: string; email: string; bio: string; avatar?: string | null }) => {
     const response = await api.put<User>("/users/me", data);
+    return response.data;
+  },
+  getPublicProfile: async (id: string | number) => {
+    const response = await api.get<PublicUserProfile>(`/users/${id}`);
     return response.data;
   }
 };

@@ -9,6 +9,16 @@ export type User = {
   updatedAt?: string;
 };
 
+export type PublicUserProfile = Omit<User, "email" | "updatedAt"> & {
+  articles?: Array<{
+    id: number;
+    title: string;
+    summary: string;
+    publishedAt: string;
+    updatedAt: string;
+  }>;
+};
+
 export type Category = {
   id: number;
   name: string;
