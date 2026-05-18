@@ -26,9 +26,16 @@
   box-sizing: border-box;
 }
 
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
+  max-width: 100%;
   min-width: 320px;
+  overflow-x: hidden;
   background: var(--background);
   color: var(--foreground);
 }
@@ -54,6 +61,8 @@ main {
 }
 
 .app-shell {
+  max-width: 100%;
+  overflow-x: clip;
   min-height: 100vh;
   background:
     radial-gradient(circle at 50% 0%, rgba(7, 182, 213, 0.08), transparent 30rem),

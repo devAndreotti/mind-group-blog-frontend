@@ -1,4 +1,4 @@
-import { BookOpen, PenLine, ShieldCheck } from "lucide-react";
+import { BookOpen, PenLine } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArticleCard } from "../components/ArticleCard";
@@ -29,10 +29,6 @@ export const Home = () => {
             <PenLine size={18} />
             Escrever
           </Link>
-        </div>
-        <div className="hero-proof">
-          <ShieldCheck size={16} />
-          CRUD protegido com JWT
         </div>
       </div>
 
