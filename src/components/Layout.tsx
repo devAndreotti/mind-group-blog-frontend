@@ -11,8 +11,16 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const defaultAvatar =
-  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=96&h=96&fit=crop&crop=faces";
+const getInitial = (name?: string) => name?.trim().charAt(0).toUpperCase() || "U";
+
+const UserAvatar = ({ name, avatar }: { name?: string; avatar?: string | null }) =>
+  avatar ? (
+    <img src={avatar} alt="" />
+  ) : (
+    <span className="avatar-fallback" aria-hidden="true">
+      {getInitial(name)}
+    </span>
+  );
 
 export const Layout = () => {
   const { user, logout } = useAuth();
@@ -59,13 +67,15 @@ export const Layout = () => {
                 aria-expanded={dropdownOpen}
                 onClick={() => setDropdownOpen((open) => !open)}
               >
-                <img src={defaultAvatar} alt="" />
+                <UserAvatar name={user.name} avatar={user.avatar} />
               </button>
 
               {dropdownOpen && (
                 <div className="user-dropdown">
                   <div className="dropdown-profile">
-                    <img src={defaultAvatar} alt="" />
+                    <div className="dropdown-avatar">
+                      <UserAvatar name={user.name} avatar={user.avatar} />
+                    </div>
                     <div>
                       <strong>{user.name}</strong>
                       <span>{user.email}</span>

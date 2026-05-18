@@ -266,11 +266,22 @@ main {
 }
 
 .avatar-button img,
-.dropdown-profile img,
+.dropdown-avatar img,
 .activity-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.avatar-fallback {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 800;
+  line-height: 1;
 }
 
 .user-dropdown {
@@ -292,9 +303,15 @@ main {
   border-bottom: 1px solid var(--border);
 }
 
-.dropdown-profile img {
+.dropdown-avatar {
   width: 44px;
   height: 44px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.dropdown-avatar img {
+  display: block;
 }
 
 .dropdown-profile strong,
@@ -1096,17 +1113,40 @@ th {
   align-items: end;
 }
 
-.profile-photo-block img {
+.profile-avatar-preview {
   grid-row: span 2;
   width: 96px;
   height: 96px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--secondary);
+}
+
+.profile-avatar-preview img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+}
+
+.profile-avatar-preview .avatar-fallback {
+  color: var(--primary-foreground);
+  font-size: 2rem;
 }
 
 .profile-photo-block span,
 .field-counter {
   color: var(--muted-foreground);
   font-size: 0.75rem;
+}
+
+.profile-photo-block > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.profile-avatar-input input {
+  margin-top: 8px;
 }
 
 .field-with-icon {

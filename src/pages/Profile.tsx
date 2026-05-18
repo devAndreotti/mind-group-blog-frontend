@@ -1,15 +1,17 @@
-import { ArrowLeft, CalendarDays, Mail, Save, UserRound } from "lucide-react";
-import { FormEvent, useEffect, useState } from "react";
+import { ArrowLeft, CalendarDays, ImagePlus, Mail, Save, UserRound } from "lucide-react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { formatDate, getErrorMessage } from "../utils";
+import { fileToDataUrl, formatDate, getErrorMessage } from "../utils";
 
-const defaultAvatar =
-  "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=160&h=160&fit=crop&crop=faces";
+const MAX_AVATAR_SIZE = 2 * 1024 * 1024;
+const ALLOWED_AVATAR_TYPES = new Set(["image/png", "image/jpeg", "image/webp"]);
+
+const getInitial = (name?: string) => name?.trim().charAt(0).toUpperCase() || "U";
 
 export const Profile = () => {
   const { user, updateProfile } = useAuth();
-  const [form, setForm] = useState({ name: "", email: "", bio: "" });
+  const [form, setForm] = useState({ name: "", email: "", bio: "", avatar: null as string | null });
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
@@ -22,9 +24,34 @@ export const Profile = () => {
     setForm({
       name: user.name,
       email: user.email,
-      bio: user.bio ?? ""
+      bio: user.bio ?? "",
+      avatar: user.avatar ?? null
     });
   }, [user]);
+
+  const handleAvatarChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    setNotice("");
+    setError("");
+
+    if (!ALLOWED_AVATAR_TYPES.has(file.type)) {
+      setError("Avatar deve ser PNG, JPG ou WebP.");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > MAX_AVATAR_SIZE) {
+      setError("Avatar deve ter no maximo 2MB.");
+      event.target.value = "";
+      return;
+    }
+
+    setForm({ ...form, avatar: await fileToDataUrl(file) });
+  };
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -65,15 +92,27 @@ export const Profile = () => {
         {error && <div className="alert">{error}</div>}
 
         <div className="profile-photo-block">
-          <img src={defaultAvatar} alt="" />
-          <label>
+          <div className="profile-avatar-preview">
+            {form.avatar ? (
+              <img src={form.avatar} alt="" />
+            ) : (
+              <span className="avatar-fallback" aria-hidden="true">
+                {getInitial(form.name)}
+              </span>
+            )}
+          </div>
+          <label className="profile-avatar-input">
             Foto de Perfil
             <input
-              value="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e"
-              readOnly
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={handleAvatarChange}
             />
           </label>
-          <span>Adicione uma imagem ou deixe em branco</span>
+          <span>
+            <ImagePlus size={13} />
+            PNG, JPG ou WebP ate 2MB
+          </span>
         </div>
 
         <div className="field-with-icon">

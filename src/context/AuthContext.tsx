@@ -13,7 +13,12 @@ type AuthContextValue = {
     password: string;
     confirmPassword: string;
   }) => Promise<void>;
-  updateProfile: (data: { name: string; email: string; bio: string }) => Promise<void>;
+  updateProfile: (data: {
+    name: string;
+    email: string;
+    bio: string;
+    avatar?: string | null;
+  }) => Promise<void>;
   logout: () => void;
 };
 

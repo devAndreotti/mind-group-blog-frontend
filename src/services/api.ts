@@ -46,7 +46,7 @@ export const authApi = {
 };
 
 export const userApi = {
-  updateMe: async (data: { name: string; email: string; bio: string }) => {
+  updateMe: async (data: { name: string; email: string; bio: string; avatar?: string | null }) => {
     const response = await api.put<User>("/users/me", data);
     return response.data;
   }
