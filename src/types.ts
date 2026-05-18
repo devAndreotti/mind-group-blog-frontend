@@ -37,6 +37,22 @@ export type Article = {
   updatedAt: string;
 };
 
+export type DashboardArticle = {
+  id: number;
+  title: string;
+  summary: string;
+  created_at?: string;
+  updated_at?: string;
+  publishedAt?: string;
+  updatedAt?: string;
+  category: Pick<Category, "name"> | null;
+};
+
+export type DashboardSummary = {
+  totalArticles: number;
+  recentArticles: DashboardArticle[];
+};
+
 export type ArticlePayload = {
   title: string;
   summary: string;

@@ -1,5 +1,13 @@
 import axios from "axios";
-import type { ArticlePayload, AuthResponse, Category, Article, Tag, User } from "../types";
+import type {
+  ArticlePayload,
+  AuthResponse,
+  Category,
+  Article,
+  DashboardSummary,
+  Tag,
+  User
+} from "../types";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3333/api";
 
@@ -40,6 +48,13 @@ export const authApi = {
 export const userApi = {
   updateMe: async (data: { name: string; email: string; bio: string }) => {
     const response = await api.put<User>("/users/me", data);
+    return response.data;
+  }
+};
+
+export const dashboardApi = {
+  get: async () => {
+    const response = await api.get<DashboardSummary>("/dashboard");
     return response.data;
   }
 };
