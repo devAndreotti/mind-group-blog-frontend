@@ -1,8 +1,8 @@
 import { ImagePlus, Plus, Save, X } from "lucide-react";
-import { FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { taxonomyApi } from "../services/api";
 import type { Article, ArticlePayload, Category } from "../types";
-import { estimateReadingTime, fileToDataUrl } from "../utils";
+import { estimateReadingTime, fileToDataUrl, validateImageFile } from "../utils";
 
 const emptyPayload: ArticlePayload = {
   title: "",
@@ -25,6 +25,7 @@ export const ArticleForm = ({
   const [form, setForm] = useState<ArticlePayload>(emptyPayload);
   const [tagDraft, setTagDraft] = useState("");
   const [categories, setCategories] = useState<Category[]>([]);
+  const [coverError, setCoverError] = useState("");
 
   useEffect(() => {
     taxonomyApi.categories().then(setCategories).catch(() => setCategories([]));
@@ -59,8 +60,32 @@ export const ArticleForm = ({
     setForm({ ...form, tags: form.tags.filter((item) => item !== tag) });
   };
 
+  const handleCoverChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) {
+      return;
+    }
+
+    const validationError = validateImageFile(file, "Imagem de capa");
+    if (validationError) {
+      setCoverError(validationError);
+      event.target.value = "";
+      return;
+    }
+
+    setCoverError("");
+    setForm({ ...form, coverImage: await fileToDataUrl(file) });
+  };
+
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setCoverError("");
+
+    if (form.coverImage && !form.coverImage.startsWith("data:image/")) {
+      setCoverError("Imagem de capa deve ser enviada por arquivo PNG, JPG ou WebP.");
+      return;
+    }
+
     await onSubmit(form);
   };
 
@@ -120,24 +145,28 @@ export const ArticleForm = ({
           Imagem de Capa
           <input
             type="file"
-            accept="image/*"
-            onChange={async (event) => {
-              const file = event.target.files?.[0];
-              if (file) {
-                setForm({ ...form, coverImage: await fileToDataUrl(file) });
-              }
-            }}
+            accept="image/png,image/jpeg,image/webp"
+            onChange={handleCoverChange}
           />
         </label>
-        <input
-          value={form.coverImage ?? ""}
-          onChange={(event) => setForm({ ...form, coverImage: event.target.value || null })}
-          placeholder="uploads/2026/01/capa.png ou URL/data:image"
-        />
+        <span className="cover-upload-hint">PNG, JPG ou WebP ate 2MB.</span>
       </div>
+      {coverError && <div className="alert">{coverError}</div>}
 
       {form.coverImage && (
-        <img className="cover-preview" src={form.coverImage} alt="Preview da capa" />
+        <div className="cover-preview-block">
+          <img className="cover-preview" src={form.coverImage} alt="Preview da capa" />
+          <button
+            className="button button-ghost"
+            type="button"
+            onClick={() => {
+              setCoverError("");
+              setForm({ ...form, coverImage: null });
+            }}
+          >
+            Remover imagem
+          </button>
+        </div>
       )}
 
       <div className="tag-editor">

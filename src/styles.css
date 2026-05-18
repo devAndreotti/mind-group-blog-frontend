@@ -980,8 +980,22 @@ th {
 }
 
 .cover-preview {
+  width: min(100%, 520px);
   max-height: 260px;
   border: 1px solid var(--border);
+  object-fit: cover;
+}
+
+.cover-preview-block {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+
+.cover-upload-hint {
+  align-self: center;
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
 }
 
 .content-input {
